@@ -41,11 +41,20 @@ while processing:
 
     # рассчет скорости обработки относительно активных потоков
     summary = 0 # знаменатель скорости обработки (в числителе будет приоритет рассматриваемого потока)
-    for active_thread in range(len(active_threads)):
+    for active_thread in range(len(active_threads)): 
         if active_threads[active_thread] == 1:
             summary += thread_priorities[active_thread]
 
-
+    # обработка пакетов активных потоков
+    for processing_thread in range(len(active_threads)):
+        if active_threads[processing_thread] == 1:
+            packets_handling[processing_thread + 1][2] += thread_priorities[processing_thread] / summary # обрабатываем пакет на величину загрузки (приоритет потока / summary)
+        if packets_handling[processing_thread + 1][2] >= packets_handling[processing_thread + 1][1]: #если пакет обработан
+            packets_handling[processing_thread + 1].clear()
+            active_threads[processing_thread] = 0 # переводим поток в состояние неактивного
+            packets_endtime[processing_thread + 1].append(cycle_counter)
+            if len(time_tracker[processing_thread + 1]) < len(packets_time[processing_thread + 1]):
+                time_tracker[processing_thread + 1].append(time_tracker[processing_thread + 1][-1] + 1)
 
 
 
