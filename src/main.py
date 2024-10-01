@@ -1,6 +1,7 @@
 from generators import generate_exp_time, generate_exp_len
 from fractions import Fraction
 import matplotlib.pyplot as plt
+from tabulate import tabulate
 
 number_of_threads = 2 # число потоков
 
@@ -101,8 +102,23 @@ print('время принятия пакета в обработку' ,packets_
 print('время обработки пакета', packets_endtime)
 print('веса', len_thread)
 
+#преобразуем полученный данные для вывода в таблличном виде
+
+table_result = []
+
+for table_thread in packets_time:
+    for table_row in range(len(packets_time[table_thread])):
+        second_row = ()
+        second_row.append(table_thread) # номер потока
+        second_row.append() # вес пакета
+        second_row.append() # время прихода
+        second_row.append() # время принятия
+        second_row.append() # время обработки
 
 
+
+
+# строим графики
 for plot_thread in packets_time:
     for sub_plots in range(len(packets_time[plot_thread])):
         plt.subplot(number_of_threads, 1, plot_thread)
@@ -110,7 +126,7 @@ for plot_thread in packets_time:
                  [len_thread[plot_thread][sub_plots], len_thread[plot_thread][sub_plots + 1]], label=f'{len_thread[plot_thread][sub_plots + 1]}') # y
         plt.title(f'Поток {plot_thread}', loc='left', fontdict={'fontsize': 8,
                                                                 'fontweight': 'bold',})
-        plt.ylabel("Время, ед.")
+    plt.ylabel("Время, ед.")
 
 plt.xlabel("Данные, бит") # выводим подпись для оси x только для последнего графика
 
