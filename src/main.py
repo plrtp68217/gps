@@ -1,5 +1,6 @@
 from generators import generate_exp_time, generate_exp_len
 from fractions import Fraction
+import matplotlib.pyplot as plt
 
 number_of_threads = 2 # число потоков
 
@@ -9,7 +10,11 @@ active_threads = {} # активные потоки (обрабатывающи�
 
 completed_threads = {} # потоки, обработавшие все пакеты (true - обработал все, false - не обработал)
 
+len_thread = {} # суммарный вес обработанных пакетов на каждой обработке
+
 packets_time = {} # время прихода пакетов для каждого потока
+
+packets_acceptance = {} # время принятия пакета на обработку
 
 packets_endtime = {} # время обработки пакетов для каждого потока
 
@@ -33,12 +38,15 @@ packets_len = {
     2: [3, 2, 2]
 }
 
+
 for thread in range(number_of_threads):
     # packets_time[thread + 1] = generate_exp_time()
+    packets_acceptance[thread + 1] = []
     packets_endtime[thread + 1] = []
     # packets_len[thread + 1] = generate_exp_len(packets_time[thread + 1])
     time_tracker[thread + 1] = [0]
     packets_handling[thread + 1] = []
+    len_thread[thread + 1] = [0]
     active_threads[thread + 1] = 0
     completed_threads[thread + 1] = False
 
@@ -49,6 +57,7 @@ while processing:
         if active_threads[thread] == 0 and completed_threads[thread] == False: # если поток неактивен и еще не обработал все пакеты
             packet_index = time_tracker[thread][-1]
             if cycle_counter >= packets_time[thread][time_tracker[thread][-1]]:
+                packets_acceptance[thread].append(cycle_counter)
                 packets_handling[thread].append(packet_index) # индекс рассматриваемого пакета
                 packets_handling[thread].append(packets_len[thread][packet_index]) # длина рассматриваемого пакета
                 packets_handling[thread].append(0) # сколько информационных единиц было обработано
@@ -66,9 +75,10 @@ while processing:
         if active_threads[processing_thread + 1] == 1:
             packets_handling[processing_thread + 1][2] += Fraction(thread_priorities[processing_thread], summary) # обрабатываем пакет на величину текущей загрузки (приоритет потока / summary)
             if packets_handling[processing_thread + 1][2] >= packets_handling[processing_thread + 1][1]: #если пакет обработан
-                packets_handling[processing_thread + 1].clear()
                 active_threads[processing_thread + 1] = 0 # переводим поток в состояние неактивного
-                packets_endtime[processing_thread + 1].append(cycle_counter + 1)
+                packets_endtime[processing_thread + 1].append(cycle_counter + 1) # записываем время, когда пакет был обработан
+                len_thread[processing_thread + 1].append(len_thread[processing_thread + 1][-1] + packets_handling[processing_thread + 1][1])
+                packets_handling[processing_thread + 1].clear()
                 if len(time_tracker[processing_thread + 1]) < len(packets_time[processing_thread + 1]):
                     time_tracker[processing_thread + 1].append(time_tracker[processing_thread + 1][-1] + 1)
                 elif len(time_tracker[processing_thread + 1]) == len(packets_time[processing_thread + 1]):
@@ -86,10 +96,25 @@ while processing:
     # переход на следующую временную единицу
     cycle_counter += 1
 
-print(packets_time)
-print(packets_endtime)
+print('время прихода пакета', packets_time)
+print('время принятия пакета в обработку' ,packets_acceptance)
+print('время обработки пакета', packets_endtime)
+print('веса', len_thread)
 
 
+
+for plot_thread in packets_time:
+    for sub_plots in range(len(packets_time[plot_thread])):
+        plt.subplot(number_of_threads, 1, plot_thread)
+        plt.plot([packets_acceptance[plot_thread][sub_plots], packets_endtime[plot_thread][sub_plots]], # x
+                 [len_thread[plot_thread][sub_plots], len_thread[plot_thread][sub_plots + 1]], label=f'{len_thread[plot_thread][sub_plots + 1]}') # y
+        plt.title(f'Поток {plot_thread}', loc='left', fontdict={'fontsize': 8,
+                                                                'fontweight': 'bold',})
+        plt.ylabel("Время, ед.")
+
+plt.xlabel("Данные, бит") # выводим подпись для оси x только для последнего графика
+
+plt.show()
 
 
 
