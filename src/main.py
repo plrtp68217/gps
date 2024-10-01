@@ -55,6 +55,18 @@ while processing:
             packets_endtime[processing_thread + 1].append(cycle_counter)
             if len(time_tracker[processing_thread + 1]) < len(packets_time[processing_thread + 1]):
                 time_tracker[processing_thread + 1].append(time_tracker[processing_thread + 1][-1] + 1)
+    
+    # проверка на факт обработки всех пакетов всеми потоками
+    end_processing = True
+    for second_thread in packets_time:
+        end_processing = end_processing and (len(time_tracker[second_thread]) < len(packets_time[second_thread]))
+    if end_processing: # если все пакеты обработаны
+        processing = False # завершить работу планировщика
+
+    # переход на следующую временную единицу
+    cycle_counter += 1
+
+
 
 
 
