@@ -29,7 +29,8 @@ for thread in packets_time:
 
 
 while processing:
-    for thread in packets_time: # проверка неактивных потоков
+    # проверка неактивных потоков
+    for thread in packets_time:
         if active_threads[thread] == 0:
             packet_index = time_tracker[thread][-1]
             if cycle_counter >= packets_time[thread][time_tracker[thread][-1]]:
@@ -37,6 +38,14 @@ while processing:
                 packets_handling[thread].append(packets_len[thread][packet_index]) # длина рассматриваемого пакета
                 packets_handling[thread].append(0) # сколько информационных единиц было обработано
                 active_threads[thread] = 1 # перевод потока в активное состояние
+
+    # рассчет скорости обработки относительно активных потоков
+    summary = 0 # знаменатель скорости обработки (в числителе будет приоритет рассматриваемого потока)
+    for active_thread in range(len(active_threads)):
+        if active_threads[active_thread] == 1:
+            summary += thread_priorities[active_thread]
+
+
 
 
 
