@@ -3,9 +3,9 @@ from fractions import Fraction
 import matplotlib.pyplot as plt
 from tabulate import tabulate
 
-number_of_threads = 2 # число потоков
+number_of_threads = 0 # число потоков
 
-thread_priorities = [1, 2] # приоритеты каждого потока
+thread_priorities = [] # приоритеты каждого потока
 
 active_threads = {} # активные потоки (обрабатывающие пакеты) (0 - не активен, 1 - активен)
 
@@ -29,15 +29,44 @@ processing = True # индикатор, отображающий работу п
 
 cycle_counter = 0 # счетчик циклов работы панировщика (каждый пройденный цикл - единица времени работы панировщика)
 
-packets_time = {
-    1: [1, 2, 3, 11],
-    2: [0, 5, 9]
-}
+# ввод исходных данных
 
-packets_len = {
-    1: [1, 1, 2, 2],
-    2: [3, 2, 2]
-}
+number_of_threads = int(input('Число потоков: '))
+
+for thread in range(number_of_threads):
+    thread_prioritie = int(input(f'Приоритет для {thread + 1} потока: '))
+    thread_priorities.append(thread_prioritie)
+
+print('Ввод времени прихода пакетов для каждого потока\nДля заверешения нажмите Enter')
+
+for entry_thread in range(number_of_threads):
+    packets_time[entry_thread + 1] = []
+    while True:
+        try:
+            packet_time = int(input(f'{entry_thread + 1} поток: '))
+        except ValueError:
+            packet_time = 'end'
+
+        if packet_time != 'end':
+            packets_time[entry_thread + 1].append(packet_time)
+        else:
+            break
+
+print('Ввод веса пакетов для каждого потока\nДля заверешения нажмите Enter')
+
+for entry_thread in range(number_of_threads):
+    packets_len[entry_thread + 1] = []
+    while True:
+        try:
+            packet_len = int(input(f'{entry_thread + 1} поток: '))
+        except ValueError:
+            packet_len = 'end'
+
+        if packet_len != 'end':
+            packets_len[entry_thread + 1].append(packet_len)
+        else:
+            break
+
 
 
 for thread in range(number_of_threads):
