@@ -97,25 +97,28 @@ while processing:
     # переход на следующую временную единицу
     cycle_counter += 1
 
-print('время прихода пакета', packets_time)
-print('время принятия пакета в обработку' ,packets_acceptance)
-print('время обработки пакета', packets_endtime)
-print('веса', len_thread)
+# print('время прихода пакета', packets_time)
+# print('время принятия пакета в обработку' ,packets_acceptance)
+# print('время обработки пакета', packets_endtime)
+# print('веса', len_thread)
 
-#преобразуем полученный данные для вывода в таблличном виде
+
+#преобразуем полученные данные для вывода в табличном виде
 
 table_result = []
+table_headers = ['Номер потока', 'Вес пакета', 't прихода', 't принятия', 't обработки']
 
 for table_thread in packets_time:
     for table_row in range(len(packets_time[table_thread])):
-        second_row = ()
+        second_row = []
         second_row.append(table_thread) # номер потока
-        second_row.append() # вес пакета
-        second_row.append() # время прихода
-        second_row.append() # время принятия
-        second_row.append() # время обработки
+        second_row.append(packets_len[table_thread][table_row]) # вес пакета
+        second_row.append(packets_time[table_thread][table_row]) # время прихода
+        second_row.append(packets_acceptance[table_thread][table_row]) # время принятия
+        second_row.append(packets_endtime[table_thread][table_row]) # время обработки
+        table_result.append(second_row)
 
-
+print(tabulate(table_result, headers=table_headers, tablefmt='grid'))
 
 
 # строим графики
