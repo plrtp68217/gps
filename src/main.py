@@ -38,10 +38,10 @@ for thread in range(number_of_threads):
     thread_priorities.append(thread_prioritie)
 
 for thread in range(number_of_threads):
-    # packets_time[thread + 1] = generate_exp_time()
+    packets_time[thread + 1] = generate_exp_time(20)
     packets_acceptance[thread + 1] = []
     packets_endtime[thread + 1] = []
-    # packets_len[thread + 1] = generate_exp_len(packets_time[thread + 1])
+    packets_len[thread + 1] = generate_exp_len(packets_time[thread + 1])
     time_tracker[thread + 1] = [0]
     packets_handling[thread + 1] = []
     len_thread[thread + 1] = [0]

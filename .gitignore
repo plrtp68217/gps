@@ -1,4 +1,13 @@
+# Локальные настройки PyCharm
+.idea/
+*.iml
+
+# Виртуальные среды Python
 venv/
+env/
+.venv/
+
+
 dist/
 build/
 __pycache__/
