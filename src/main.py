@@ -37,38 +37,6 @@ for thread in range(number_of_threads):
     thread_prioritie = int(input(f'Приоритет для {thread + 1} потока: '))
     thread_priorities.append(thread_prioritie)
 
-print('Ввод времени прихода пакетов для каждого потока\nДля заверешения нажмите Enter')
-
-for entry_thread in range(number_of_threads):
-    packets_time[entry_thread + 1] = []
-    while True:
-        try:
-            packet_time = int(input(f'{entry_thread + 1} поток: '))
-        except ValueError:
-            packet_time = 'end'
-
-        if packet_time != 'end':
-            packets_time[entry_thread + 1].append(packet_time)
-        else:
-            break
-
-print('Ввод веса пакетов для каждого потока\nДля заверешения нажмите Enter')
-
-for entry_thread in range(number_of_threads):
-    packets_len[entry_thread + 1] = []
-    while True:
-        try:
-            packet_len = int(input(f'{entry_thread + 1} поток: '))
-        except ValueError:
-            packet_len = 'end'
-
-        if packet_len != 'end':
-            packets_len[entry_thread + 1].append(packet_len)
-        else:
-            break
-
-
-
 for thread in range(number_of_threads):
     # packets_time[thread + 1] = generate_exp_time()
     packets_acceptance[thread + 1] = []
