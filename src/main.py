@@ -1,7 +1,11 @@
-from generators import generate_exp_time, generate_exp_len
-from table import showTable
 from fractions import Fraction
-import matplotlib.pyplot as plt
+import threading
+
+from generators import generate_exp_time, generate_exp_len
+from table import show_table
+from plot import show_plot
+from transform import transform_data
+
 
 number_of_threads = 0 # число потоков
 
@@ -37,6 +41,7 @@ input_parameters = eval(input('\nВвод входных параметров: [
 number_of_threads = len(input_parameters)
 thread_priorities = input_parameters[1]
 
+#инициализация начальных значений
 for thread in range(number_of_threads):
     packets_time[thread + 1] = generate_exp_time(20)
     packets_acceptance[thread + 1] = []
@@ -94,35 +99,21 @@ while processing:
     cycle_counter += 1
 
 #преобразуем полученные данные для вывода в табличном виде
-table_result = []
 table_headers = ['Номер потока', 'Вес пакета', 't прихода', 't принятия', 't обработки']
+table_rows = transform_data(packets_time, packets_len, packets_acceptance, packets_endtime)
 
-for table_thread in packets_time:
-    for table_row in range(len(packets_time[table_thread])):
-        second_row = []
-        second_row.append(table_thread) # номер потока
-        second_row.append(packets_len[table_thread][table_row]) # вес пакета
-        second_row.append(packets_time[table_thread][table_row]) # время прихода
-        second_row.append(packets_acceptance[table_thread][table_row]) # время принятия
-        second_row.append(packets_endtime[table_thread][table_row]) # время обработки
-        table_result.append(second_row)
 
-# строим графики
-for plot_thread in packets_time:
-    for sub_plots in range(len(packets_time[plot_thread])):
-        plt.subplot(number_of_threads, 1, plot_thread)
-        plt.plot([packets_acceptance[plot_thread][sub_plots], packets_endtime[plot_thread][sub_plots]], # x
-                 [len_thread[plot_thread][sub_plots], len_thread[plot_thread][sub_plots + 1]], label=f'{len_thread[plot_thread][sub_plots + 1]}') # y
-        plt.title(f'Поток {plot_thread}', loc='left', fontdict={'fontsize': 8,
-                                                                'fontweight': 'bold',})
-    plt.ylabel("Данные, бит")
+def show_table_thread():
+    # выводим результирующие данные в табличном виде
+    show_table(table_headers, table_rows)
 
-plt.xlabel("Время, ед.") # выводим подпись для оси x только для последнего графика
+if __name__ == "__main__":
+    #вывод таблицы в дополнительном потоке
+    thread = threading.Thread(target=show_table_thread)
+    thread.start()
 
-plt.show()
-
-root = showTable(table_headers, table_result)
-root.mainloop()
+    # вывод графиков в основном потоке
+    show_plot(packets_time, number_of_threads, packets_acceptance, packets_endtime, len_thread)
 
 
 

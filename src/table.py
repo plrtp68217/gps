@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 
-def showTable(headers: list, data: list):
+def show_table(headers: list, data: list):
     '''
     Вывод окна с таблицей.
     headers - ['столбец 1, столбец 2, ...'].
@@ -31,4 +31,4 @@ def showTable(headers: list, data: list):
     scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
     # Запускаем приложение
-    return root
+    root.mainloop()
