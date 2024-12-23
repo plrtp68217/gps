@@ -38,7 +38,7 @@ input_parameters = eval(input('\nВвод входных параметров: [
                               'Где n1 - номер 1 потока,w1 - приоритет 1 потока.\n'
                               'Пример: [[1, 2], [2, 3]]\n: '))
 
-number_of_threads = len(input_parameters)
+number_of_threads = len(input_parameters[0])
 thread_priorities = input_parameters[1]
 
 #инициализация начальных значений
