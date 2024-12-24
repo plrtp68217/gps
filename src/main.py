@@ -75,10 +75,11 @@ while processing:
     # обработка пакетов активных потоков
     for processing_thread in range(len(active_threads)):
         if active_threads[processing_thread + 1] == 1:
-            packets_handling[processing_thread + 1][2] += Fraction(thread_priorities[processing_thread], summary) # обрабатываем пакет на величину текущей загрузки (приоритет потока / summary)
+            # обрабатываем пакет на величину текущей загрузки (приоритет потока / summary)
+            packets_handling[processing_thread + 1][2] += (Fraction(thread_priorities[processing_thread], summary) * Fraction(1, 100))
             if packets_handling[processing_thread + 1][2] >= packets_handling[processing_thread + 1][1]: #если пакет обработан
                 active_threads[processing_thread + 1] = 0 # переводим поток в состояние неактивного
-                packets_endtime[processing_thread + 1].append(cycle_counter + 1) # записываем время, когда пакет был обработан
+                packets_endtime[processing_thread + 1].append(round(cycle_counter + 0.01, 2)) # записываем время, когда пакет был обработан
                 len_thread[processing_thread + 1].append(len_thread[processing_thread + 1][-1] + packets_handling[processing_thread + 1][1])
                 packets_handling[processing_thread + 1].clear()
                 if len(time_tracker[processing_thread + 1]) < len(packets_time[processing_thread + 1]):
@@ -96,7 +97,7 @@ while processing:
         processing = False # завершить работу планировщика
 
     # переход на следующую временную единицу
-    cycle_counter += 1
+    cycle_counter = round(cycle_counter + 0.01, 2)
 
 #преобразуем полученные данные для вывода в табличном виде
 table_headers = ['Номер потока', 'Вес пакета', 't прихода', 't принятия', 't обработки']

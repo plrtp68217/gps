@@ -7,7 +7,7 @@ def generate_exp_time(max_packets: int) -> list:
     '''
     number_of_packets = int(max_packets * random.random()) + 1 # максимальное число пакетов
     rate = 0.5
-    exp_time = [int(10 * random.expovariate(rate)) for _ in range(number_of_packets)]
+    exp_time = [round(10 * random.expovariate(rate), 2) for _ in range(number_of_packets)]
     return sorted(exp_time)
 
 def generate_exp_len(packets: list) -> list:
